@@ -2,8 +2,9 @@ package glo
 
 import "time"
 
+// Board struct for response unmarshall
 type Board struct {
-	Id              string        `json:"id"`
+	ID              string        `json:"id"`
 	Name            string        `json:"name"`
 	Columns         []BoardColumn `json:"columns"`
 	ArchivedColumns []BoardColumn `json:"archived_columns"`

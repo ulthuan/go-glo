@@ -1,18 +1,20 @@
 package glo
 
 import (
-	"github.com/levigross/grequests"
 	"log"
+
+	"github.com/levigross/grequests"
 )
 
+// Glo Base Struct for the library and get the paths and the token for access to the API
 type Glo struct {
-	baseUrlApi     string
+	baseURLApi     string
 	pathBoards     string
 	pathColumn     string
 	pathCard       string
 	pathAttachment string
 	pathComment    string
-	pathUser	   string
+	pathUser       string
 	token          string
 }
 
@@ -20,13 +22,13 @@ type Glo struct {
 func NewGloClient(token string) Glo {
 
 	g := Glo{
-		baseUrlApi:     "https://gloapi.gitkraken.com/v1/glo",
+		baseURLApi:     "https://gloapi.gitkraken.com/v1/glo",
 		pathBoards:     "/boards",
 		pathColumn:     "/columns",
 		pathCard:       "/cards",
 		pathAttachment: "/attachments",
 		pathComment:    "/comments",
-		pathUser:		"/user",
+		pathUser:       "/user",
 		token:          token,
 	}
 
@@ -47,7 +49,7 @@ func (g Glo) prepareParams(fields []string) (params string) {
 }
 
 // Unified method for call the Glo Api and put the authorization header with the token
-func (g Glo) callApi(method string, endpoint string, fields []string, data interface{}) (resp *grequests.Response) {
+func (g Glo) callAPI(method string, endpoint string, fields []string, data interface{}) (resp *grequests.Response) {
 	ro := &grequests.RequestOptions{
 		Headers: map[string]string{"Authorization": "Bearer " + g.token},
 	}
@@ -62,9 +64,9 @@ func (g Glo) callApi(method string, endpoint string, fields []string, data inter
 		params = g.prepareParams(fields)
 	}
 
-	log.Println(g.baseUrlApi + endpoint + params)
+	log.Println(g.baseURLApi + endpoint + params)
 
-	resp, err := grequests.Req(method, g.baseUrlApi+endpoint+params, ro)
+	resp, err := grequests.Req(method, g.baseURLApi+endpoint+params, ro)
 
 	if err != nil {
 		log.Fatal(err)
@@ -73,9 +75,9 @@ func (g Glo) callApi(method string, endpoint string, fields []string, data inter
 	return
 }
 
-// Get all the boards that read the token
+// GetBoards Get all the boards that read the token
 func (g Glo) GetBoards(fields []string) (boards []Board) {
-	resp := g.callApi("GET", g.pathBoards, fields, nil)
+	resp := g.callAPI("GET", g.pathBoards, fields, nil)
 
 	if resp.Ok {
 		err := resp.JSON(&boards)
@@ -86,9 +88,9 @@ func (g Glo) GetBoards(fields []string) (boards []Board) {
 	return
 }
 
-// Get a single board
+// GetBoard Get a single board
 func (g Glo) GetBoard(id string, fields []string) (board Board) {
-	resp := g.callApi("GET", g.pathBoards+"/"+id, fields, nil)
+	resp := g.callAPI("GET", g.pathBoards+"/"+id, fields, nil)
 
 	if resp.Ok {
 		err := resp.JSON(&board)
@@ -99,11 +101,11 @@ func (g Glo) GetBoard(id string, fields []string) (board Board) {
 	return
 }
 
-// Create a column in the board that pass with the id
-func (g Glo) CreateBoardColumn(boardId string, data CreateBoardColumnParams) (column BoardColumn) {
-	resp := g.callApi(
+// CreateBoardColumn Create a column in the board that pass with the id
+func (g Glo) CreateBoardColumn(boardID string, data CreateBoardColumnParams) (column BoardColumn) {
+	resp := g.callAPI(
 		"POST",
-		g.pathBoards+"/"+boardId+g.pathColumn,
+		g.pathBoards+"/"+boardID+g.pathColumn,
 		nil,
 		data,
 	)
@@ -118,11 +120,11 @@ func (g Glo) CreateBoardColumn(boardId string, data CreateBoardColumnParams) (co
 	return
 }
 
-// Edit a column in a single board
-func (g Glo) EditBoardColumn(boardId string, columnId string, data CreateBoardColumnParams) (column BoardColumn) {
-	resp := g.callApi(
+// EditBoardColumn Edit a column in a single board
+func (g Glo) EditBoardColumn(boardID string, columnID string, data CreateBoardColumnParams) (column BoardColumn) {
+	resp := g.callAPI(
 		"POST",
-		g.pathBoards+"/"+boardId+g.pathColumn+"/"+columnId,
+		g.pathBoards+"/"+boardID+g.pathColumn+"/"+columnID,
 		nil,
 		data,
 	)
@@ -137,11 +139,11 @@ func (g Glo) EditBoardColumn(boardId string, columnId string, data CreateBoardCo
 	return
 }
 
-// Delete a column in a single board
-func (g Glo) DeleteBoardColumn(boardId string, columnId string) {
-	resp := g.callApi(
+// DeleteBoardColumn Delete a column in a single board
+func (g Glo) DeleteBoardColumn(boardID string, columnID string) {
+	resp := g.callAPI(
 		"DELETE",
-		g.pathBoards+"/"+boardId+g.pathColumn+"/"+columnId,
+		g.pathBoards+"/"+boardID+g.pathColumn+"/"+columnID,
 		nil,
 		nil,
 	)
@@ -151,11 +153,11 @@ func (g Glo) DeleteBoardColumn(boardId string, columnId string) {
 	}
 }
 
-// Get all the cards inside board
-func (g Glo) GetBoardCards(boardId string, fields []string) (cards []BoardCard) {
-	resp := g.callApi(
+// GetBoardCards Get all the cards inside board
+func (g Glo) GetBoardCards(boardID string, fields []string) (cards []BoardCard) {
+	resp := g.callAPI(
 		"GET",
-		g.pathBoards+"/"+boardId+g.pathCard,
+		g.pathBoards+"/"+boardID+g.pathCard,
 		fields,
 		nil,
 	)
@@ -170,11 +172,11 @@ func (g Glo) GetBoardCards(boardId string, fields []string) (cards []BoardCard) 
 	return
 }
 
-// Get a single card of a board
-func (g Glo) GetBoardCard(boardId string, cardId string, fields []string) (card BoardCard) {
-	resp := g.callApi(
+// GetBoardCard Get a single card of a board
+func (g Glo) GetBoardCard(boardID string, cardID string, fields []string) (card BoardCard) {
+	resp := g.callAPI(
 		"GET",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID,
 		fields,
 		nil,
 	)
@@ -189,11 +191,11 @@ func (g Glo) GetBoardCard(boardId string, cardId string, fields []string) (card 
 	return
 }
 
-// Create a card inside board
-func (g Glo) CreateBoardCard(boardId string, cardId string, data BoardCardParams) (card BoardCard) {
-	resp := g.callApi(
+// CreateBoardCard Create a card inside board
+func (g Glo) CreateBoardCard(boardID string, data BoardCardParams) (card BoardCard) {
+	resp := g.callAPI(
 		"POST",
-		g.pathBoards+"/"+boardId+g.pathCard,
+		g.pathBoards+"/"+boardID+g.pathCard,
 		nil,
 		data,
 	)
@@ -208,11 +210,11 @@ func (g Glo) CreateBoardCard(boardId string, cardId string, data BoardCardParams
 	return
 }
 
-// Edit a card of board
-func (g Glo) EditBoardCard(boardId string, cardId string, data BoardCardParams) (card BoardCard) {
-	resp := g.callApi(
+// EditBoardCard Edit a card of board
+func (g Glo) EditBoardCard(boardID string, cardID string, data BoardCardParams) (card BoardCard) {
+	resp := g.callAPI(
 		"POST",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID,
 		nil,
 		data,
 	)
@@ -226,11 +228,11 @@ func (g Glo) EditBoardCard(boardId string, cardId string, data BoardCardParams) 
 	return
 }
 
-// Delete a card of board
-func (g Glo) DeleteBoardCard(boardId string, cardId string) {
-	resp := g.callApi(
+// DeleteBoardCard Delete a card of board
+func (g Glo) DeleteBoardCard(boardID string, cardID string) {
+	resp := g.callAPI(
 		"DELETE",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID,
 		nil,
 		nil,
 	)
@@ -240,11 +242,11 @@ func (g Glo) DeleteBoardCard(boardId string, cardId string) {
 	}
 }
 
-// Get all the cards of a single column of board
-func (g Glo) GetBoardColumnCards(boardId string, columnId string, fields []string) (cards []BoardCard) {
-	resp := g.callApi(
+// GetBoardColumnCards Get all the cards of a single column of board
+func (g Glo) GetBoardColumnCards(boardID string, columnID string, fields []string) (cards []BoardCard) {
+	resp := g.callAPI(
 		"GET",
-		g.pathBoards+"/"+boardId+g.pathColumn+"/"+columnId+"/"+g.pathCard,
+		g.pathBoards+"/"+boardID+g.pathColumn+"/"+columnID+"/"+g.pathCard,
 		fields,
 		nil,
 	)
@@ -259,11 +261,11 @@ func (g Glo) GetBoardColumnCards(boardId string, columnId string, fields []strin
 	return
 }
 
-// Get all the attachments of a single card of board
-func (g Glo) GetBoardCardAttachments(boardId string, cardId string, fields []string) (attachments []Attachment) {
-	resp := g.callApi(
+// GetBoardCardAttachments Get all the attachments of a single card of board
+func (g Glo) GetBoardCardAttachments(boardID string, cardID string, fields []string) (attachments []Attachment) {
+	resp := g.callAPI(
 		"GET",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId+"/"+g.pathAttachment,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID+"/"+g.pathAttachment,
 		fields,
 		nil,
 	)
@@ -278,11 +280,11 @@ func (g Glo) GetBoardCardAttachments(boardId string, cardId string, fields []str
 	return
 }
 
-// Get all the comments of a card
-func (g Glo) GetBoardCardComments(boardId string, cardId string, fields []string) (comments []Comment) {
-	resp := g.callApi(
+// GetBoardCardComments Get all the comments of a card
+func (g Glo) GetBoardCardComments(boardID string, cardID string, fields []string) (comments []Comment) {
+	resp := g.callAPI(
 		"GET",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId+"/"+g.pathComment,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID+"/"+g.pathComment,
 		fields,
 		nil,
 	)
@@ -297,11 +299,11 @@ func (g Glo) GetBoardCardComments(boardId string, cardId string, fields []string
 	return
 }
 
-// Add a comment to a card
-func (g Glo) CreateBoardCardComment(boardId string, cardId string, data ParamComment) (comment Comment) {
-	resp := g.callApi(
+// CreateBoardCardComment Add a comment to a card
+func (g Glo) CreateBoardCardComment(boardID string, cardID string, data ParamComment) (comment Comment) {
+	resp := g.callAPI(
 		"POST",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId+"/"+g.pathComment,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID+"/"+g.pathComment,
 		nil,
 		data,
 	)
@@ -316,11 +318,11 @@ func (g Glo) CreateBoardCardComment(boardId string, cardId string, data ParamCom
 	return
 }
 
-// Edit a comment of card
-func (g Glo) EditBoardCardComment(boardId string, cardId string, commentId string, data ParamComment) (comment Comment) {
-	resp := g.callApi(
+// EditBoardCardComment Edit a comment of card
+func (g Glo) EditBoardCardComment(boardID string, cardID string, commentID string, data ParamComment) (comment Comment) {
+	resp := g.callAPI(
 		"POST",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId+"/"+g.pathComment+"/"+commentId,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID+"/"+g.pathComment+"/"+commentID,
 		nil,
 		data,
 	)
@@ -335,11 +337,11 @@ func (g Glo) EditBoardCardComment(boardId string, cardId string, commentId strin
 	return
 }
 
-// Delete a comment of card
-func (g Glo) DeleteBoardCardComment(boardId string, cardId string, commentId string) {
-	resp := g.callApi(
+// DeleteBoardCardComment Delete a comment of card
+func (g Glo) DeleteBoardCardComment(boardID string, cardID string, commentID string) {
+	resp := g.callAPI(
 		"DELETE",
-		g.pathBoards+"/"+boardId+g.pathCard+"/"+cardId+"/"+g.pathComment+"/"+commentId,
+		g.pathBoards+"/"+boardID+g.pathCard+"/"+cardID+"/"+g.pathComment+"/"+commentID,
 		nil,
 		nil,
 	)
@@ -349,9 +351,9 @@ func (g Glo) DeleteBoardCardComment(boardId string, cardId string, commentId str
 	}
 }
 
-// Get information of the connect user
-func (g Glo) GetUser(fields []string) (user User){
-	resp := g.callApi(
+// GetUser Get information of the connect user
+func (g Glo) GetUser(fields []string) (user User) {
+	resp := g.callAPI(
 		"GET",
 		g.pathUser,
 		fields,

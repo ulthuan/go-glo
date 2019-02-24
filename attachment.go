@@ -2,6 +2,7 @@ package glo
 
 import "time"
 
+// Attachment struct for response unmarshall
 type Attachment struct {
 	ID          string    `json:"id"`
 	Filename    string    `json:"filename"`

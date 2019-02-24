@@ -1,12 +1,14 @@
 package glo
 
+// User struct for response unmarshall
 type User struct {
-	Id       string `json:"id"`
+	ID       string `json:"id"`
 	Name     string `json:"name"`
 	Username string `json:"username"`
 	Email    string `json:"email"`
 }
 
+// PartialUser struct for response unmarshall
 type PartialUser struct {
-	Id string `json:"id"`
+	ID string `json:"id"`
 }

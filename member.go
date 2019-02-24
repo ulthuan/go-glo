@@ -1,7 +1,8 @@
 package glo
 
+// Member struct for response unmarshall
 type Member struct {
-	Id       string `json:"id"`
+	ID       string `json:"id"`
 	Role     string `json:"role"`
 	Username string `json:"username"`
 }
